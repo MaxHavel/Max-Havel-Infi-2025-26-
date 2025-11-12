@@ -1,6 +1,5 @@
 select count () from customers where City = 'Berlin';
 
-
 select customerName,City,Country  from customers;
 
 select customerName from customers where city ='London'
