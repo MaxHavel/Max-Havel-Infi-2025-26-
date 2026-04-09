@@ -1,0 +1,4 @@
+create table leser (id int AUTO_INCREMENT primary key, name text Not null, email text not null unique, mitglied_seit text not null);
+
+create table Buch (id int AUTO_INCREMENT primary key, titel text Not null, autor text not null, isbn text unique, erscheinungsjahr int);
+
