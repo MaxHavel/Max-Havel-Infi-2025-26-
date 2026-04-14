@@ -1,4 +1,76 @@
+------------------ Aufgabe 1 -------------------------------------------------------------------------
 create table leser (id int AUTO_INCREMENT primary key, name text Not null, email text not null unique, mitglied_seit text not null);
 
+------------------ Aufgabe 2 -------------------------------------------------------------------------
 create table Buch (id int AUTO_INCREMENT primary key, titel text Not null, autor text not null, isbn text unique, erscheinungsjahr int);
 
+------------------ Aufgabe 3 -------------------------------------------------------------------------
+create table ausleihe (leser_id int not null, buch_id int not null, ausleih_datum text not null, rueckgabe_datum text, anzahl_tage int not null check (anzahl_tage > 0), 
+        primary key (leser_id, buch_id, ausleih_datum),
+        foreign key (leser_id) references leser(id) on delete restrict,
+        foreign key (buch_id) references buch(id) on delete restrict);
+
+
+------------------ Aufgabe 4 -------------------------------------------------------------------------
+create index idx_Leser_Name on leser(name);
+create index idx_Buch_Titel on Buch(titel);
+create index idx_ausgeliehene_Buecher on ausleihe(buch_id) where rueckgabe_datum is null;
+
+------------------ Aufgabe 5 -------------------------------------------------------------------------
+INSERT INTO leser (id, name, email, mitglied_seit) VALUES
+(1, 'Max Mustermann', 'max@email.de', '2023-01-15'),
+(2, 'Maria Musterfrau', 'maria@email.de', '2023-03-20'),
+(3, 'Peter Schmidt', 'peter@email.de', '2024-01-10');
+
+INSERT INTO buch (id, titel, autor, isbn, erscheinungsjahr) VALUES
+(1, 'Der Herr der Ringe', 'J.R.R. Tolkien', '978-3608939791', 1954),
+(2, 'Harry Potter 1', 'J.K. Rowling', '978-3551551679', 1997),
+(3, 'Die Verwandlung', 'Franz Kafka', '978-3150099007', 1915),
+(4, '1984', 'George Orwell', '978-3548234106', 1949);
+
+
+INSERT INTO ausleihe (leser_id, buch_id, ausleih_datum, rueckgabe_datum, anzahl_tage) VALUES
+(1, 1, '2024-01-10', '2024-01-24', 14),
+(1, 2, '2024-02-01', NULL, 10),
+(2, 4, '2024-01-15', '2024-01-22', 7),
+(2, 1, '2024-02-05', NULL, 21),
+(3, 3, '2024-01-20', '2024-01-25', 5);
+
+------------------ Aufgabe 6 -------------------------------------------------------------------------
+SELECT 
+    l.name AS lesername,
+    b.titel AS buchtitel,
+    a.ausleih_datum,
+    a.rueckgabe_datum
+FROM ausleihe a
+JOIN leser l ON a.leser_id = l.id
+JOIN buch b ON a.buch_id = b.id
+ORDER BY a.ausleih_datum DESC;
+
+
+SELECT 
+    b.titel,
+    l.name AS lesername,
+    a.ausleih_datum
+FROM ausleihe a
+JOIN leser l ON a.leser_id = l.id
+JOIN buch b ON a.buch_id = b.id
+WHERE a.rueckgabe_datum IS NULL;
+
+
+SELECT 
+    b.titel,
+    COUNT(*) AS anzahl_ausleihen
+FROM ausleihe a
+JOIN buch b ON a.buch_id = b.id
+GROUP BY b.id, b.titel;
+
+
+SELECT 
+    l.name,
+    COUNT(*) AS anzahl_ausleihen
+FROM ausleihe a
+JOIN leser l ON a.leser_id = l.id
+GROUP BY l.id, l.name
+ORDER BY anzahl_ausleihen DESC
+LIMIT 1;
