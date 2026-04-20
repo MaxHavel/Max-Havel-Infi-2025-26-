@@ -74,3 +74,6 @@ JOIN leser l ON a.leser_id = l.id
 GROUP BY l.id, l.name
 ORDER BY anzahl_ausleihen DESC
 LIMIT 1;
+
+
+create table mitarbeiter (id int not null, name text not null, )

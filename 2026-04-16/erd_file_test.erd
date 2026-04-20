@@ -1,0 +1,34 @@
+erdiagram Model
+
+entity Leser {
+   id: int key
+   name: text
+   email:  text 
+   mitglied_seit: text 
+}
+
+entity Buch {
+    id: int key
+    titel: text 
+    autor: text
+    isbn: text unique
+    verfuegbar: boolean 
+}
+
+entity Ausleihr {
+   id: int key
+   leser_id: int 
+   buch_id: int 
+   ausleih_datum: text 
+   rueckgabe_datum: text
+}
+
+relationship Test {
+   Leser [1]-> Ausleihr [N]
+}
+//- Mitarbeiter der Bibliothek
+//... leiht aus ... nimmt zurück
+//- bonus: Buch -> Exemplar 
+//- Buch (Titel, Autor, Verlag, ISBN) -> Exemplar (physisches Exemplar,BuchID, Standort, Status)
+//
+//Für DIESE Hausübung im BigER Plugin modellieren.
