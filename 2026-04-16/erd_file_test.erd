@@ -22,10 +22,24 @@ entity Ausleihr {
    ausleih_datum: text 
    rueckgabe_datum: text
 }
+entity Mitarbeiter {
+   titel: text key
+   Autor: text 
+   Verlag: text
+   ISBN: text unique
+}
 
-relationship Test {
+relationship Leser_A {
    Leser [1]-> Ausleihr [N]
 }
+relationship Buch_A {
+   Buch [1]-> Ausleihr [N]
+}
+relationship Ausleihe_M {
+   Ausleihr [N] -> Mitarbeiter [1]
+}
+
+
 //- Mitarbeiter der Bibliothek
 //... leiht aus ... nimmt zurück
 //- bonus: Buch -> Exemplar 
