@@ -15,6 +15,7 @@ entity Buch {
     verfuegbar: boolean 
 }
 
+
 entity Ausleihr {
    id: int key
    leser_id: int 
