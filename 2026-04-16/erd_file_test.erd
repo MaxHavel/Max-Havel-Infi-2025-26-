@@ -1,49 +1,49 @@
 erdiagram Model
+notation=crowsfoot
 
 entity Leser {
-   id: int key
-   name: text
-   email:  text 
-   mitglied_seit: text 
+   id key
+   name
+   email
+   mitglied_seit
 }
 
 entity Buch {
-    id: int key
-    titel: text 
-    autor: text
-    isbn: text unique
-    verfuegbar: boolean 
+    id key
+    titel 
+    autor
+    isbn
+    verfuegbar
 }
 
 
-entity Ausleihr {
-   id: int key
-   leser_id: int 
-   buch_id: int 
-   ausleih_datum: text 
-   rueckgabe_datum: text
-}
 entity Mitarbeiter {
-   titel: text key
-   Autor: text 
-   Verlag: text
-   ISBN: text unique
+   titel key
+   Autor
+   Verlag
+   ISBN 
 }
 
-relationship Leser_A {
-   Leser [1]-> Ausleihr [N]
-}
-relationship Buch_A {
-   Buch [1]-> Ausleihr [N]
-}
-relationship Ausleihe_M {
-   Ausleihr [N] -> Mitarbeiter [1]
+entity Exemplar {
+   physisches_Exemplar key 
+   BuchID  key 
+   Standort 
+   Status 
 }
 
 
-//- Mitarbeiter der Bibliothek
-//... leiht aus ... nimmt zurück
-//- bonus: Buch -> Exemplar 
-//- Buch (Titel, Autor, Verlag, ISBN) -> Exemplar (physisches Exemplar,BuchID, Standort, Status)
-//
-//Für DIESE Hausübung im BigER Plugin modellieren.
+relationship Ausleihr {
+   Mitarbeiter [N] -> Exemplar [N] -> Leser [N] 
+   id: int key
+   leser_id 
+   buch_id
+   ausleih_datum
+   rueckgabe_datum
+}
+
+relationship Buch_Exemplar {
+   Buch [1] -> Exemplar [N]
+}
+
+
+
