@@ -1,0 +1,78 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+  runtime  = "deno"
+}
+
+/// Generates an ERD in Mermaid format
+generator erd {
+  provider = "prisma-erd-generator"
+  format = Mermaid
+}
+
+model Language {
+  id            Int    @id @default(autoincrement())
+  bcp47Code     String @unique
+  posixCode     String @unique
+  iso6393Code   String @unique
+  directoryName String @unique
+  englishName   String @unique
+  whisperCode   String?
+
+  languageProficiencies LanguageProficiency[]
+  votes                 Vote[]
+}
+
+model MasterString {
+  id   Int    @id @default(autoincrement())
+  text String @unique
+
+  votes Vote[]
+}
+
+model LlmModel {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  languageProficiencies LanguageProficiency[]
+  votes                 Vote[]
+}
+
+model LanguageProficiency {
+  id         Int @id @default(autoincrement())
+  llmModelId Int
+  languageId Int
+  level      Int
+
+  llmModel LlmModel @relation(fields: [llmModelId], references: [id], onDelete: Cascade)
+  language Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+
+  /// Jedes LLM bewertet jede Sprache höchstens einmal
+  @@unique([llmModelId, languageId])
+  /// Accelerates lookup of proficiency for a specific LLM-language pair
+  @@index([llmModelId, languageId])
+}
+
+model Vote {
+  id              Int      @id @default(autoincrement())
+  llmModelId      Int
+  masterStringId  Int
+  languageId      Int
+  translationText String
+  submittedAt     DateTime @default(now())
+
+  llmModel     LlmModel     @relation(fields: [llmModelId], references: [id], onDelete: Cascade)
+  masterString MasterString @relation(fields: [masterStringId], references: [id], onDelete: Cascade)
+  language     Language     @relation(fields: [languageId], references: [id], onDelete: Cascade)
+
+  /// Ein Vote ist eindeutig über (Modell, Quelltext, Sprache, Übersetzungstext)
+  @@unique([llmModelId, masterStringId, languageId, translationText])
+  /// Accelerates lookup of all votes for a specific language
+  @@index([languageId])
+  /// Accelerates lookup of all votes by a specific LLM
+  @@index([llmModelId])
+}
