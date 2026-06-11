@@ -76,4 +76,4 @@ ORDER BY anzahl_ausleihen DESC
 LIMIT 1;
 
 
-create table mitarbeiter (id int not null, name text not null, )
+create table mitarbeiter (id int not null, name text not null, position text not null);
